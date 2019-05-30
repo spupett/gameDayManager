@@ -3,18 +3,23 @@
     <div id="name">
       <label for="users">Comma seperated users</label>
       <input type="text" name="users" id="users" v-model="userList">
+      <button v-on:click="showGames()">Get User</button>
+      <mechanics-filter v-bind:games="sortedGames" />
+      <div id="games" v-bind:key=game.bggId v-for="game in sortedGames"><img v-bind:src="game.thumbnail">{{ game.name }}</div> 
     </div>
-    <button v-on:click="showGames()">Get User</button>
-    <div id="gameids" v-bind:key=game.bggId v-for="game in sortedGames"><img v-bind:src="game.thumbnail">{{ game.name }}</div> 
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import "babel-polyfill";
+import MechanicsFilter from './AvailableMechanics.vue';
 
 export default {
-  name: 'userdata',
+  components: {
+    MechanicsFilter,
+  },
+  name: 'gameData',
   data () {
     return {
       userList: 'spuppett, HKImpact',
@@ -28,7 +33,6 @@ export default {
       this.userNames = userNames(this.userList);
       this.gamesIDs = await allGameIDs(this.userNames);
       this.games = await getGameDetails(this.gamesIDs);
-      console.log(this.games);
     }
   },
   computed: {

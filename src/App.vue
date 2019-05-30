@@ -1,17 +1,17 @@
 <template>
   <div>
     <h1>Game Day Manager</h1>
-    <user></user>
+    <gameData></gameData>
   </div>
 </template>
 
 <script>
 
-import User from './components/User.vue'
+import Games from './components/GameInfo.vue'
 
 export default {
   components: {
-    'user': User
+    'gameData': Games
   },
   data () {
     return {
@@ -19,7 +19,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-
-</style>

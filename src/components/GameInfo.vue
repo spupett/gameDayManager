@@ -47,16 +47,31 @@ export default {
   },
   computed: {
     sortedGames() {
-      return [...this.games].sort(compareGameNames);
+      return showBestAtFirst(this.userNames.length, [...this.games].sort(compareGameNames));
     }
   }
 };
+
+function showBestAtFirst(number, games) {
+  const bestAt = [];
+  const others = [];
+  games.forEach((game, idx) => {
+    if(Number(game.playerCount.best) === number ) {
+      bestAt.push(game);
+    }
+    else {
+      others.push(game);
+    }
+  });
+
+  return bestAt.concat(others);
+}
 
 function compareGameNames(g1, g2) {
   const g1Name = g1.name.toUpperCase();
   const g2Name = g2.name.toUpperCase();
 
-  return (g1Name > g2Name) ? 1 : -1;
+  return (g1Name > g2Name) ? 1 : (g1Name < g2Name) ? -1 : 0;
 }
 
 function userNames(names) { 

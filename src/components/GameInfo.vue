@@ -4,7 +4,7 @@
       <label for="users">Comma seperated users</label>
       <input type="text" name="users" id="users" v-model="userList">
       <button v-on:click="showGames()">Get User</button>
-      <mechanics-filter v-bind:games="sortedGames" />
+      <mechanisms-filter v-bind:games="sortedGames" />
       <div id="games" v-bind:key=game.bggId v-for="game in sortedGames">
         <img v-bind:src="game.thumbnail" />
         <div  style="display: inline-block">
@@ -23,11 +23,11 @@
 <script>
 import axios from "axios";
 import "babel-polyfill";
-import MechanicsFilter from './AvailableMechanics.vue';
+import mechanismsFilter from './AvailableMechanisms.vue';
 
 export default {
   components: {
-    MechanicsFilter,
+    mechanismsFilter,
   },
   name: 'gameData',
   data () {

@@ -56,6 +56,7 @@ export default {
     border-radius: 6px;
     margin: 3px 5px 3px;
     padding: 0px 4px;
+    cursor: default;
   }
 
   #mechanics-box .mechanic-tag.inactive {

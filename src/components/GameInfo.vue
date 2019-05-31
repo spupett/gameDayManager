@@ -5,7 +5,17 @@
       <input type="text" name="users" id="users" v-model="userList">
       <button v-on:click="showGames()">Get User</button>
       <mechanics-filter v-bind:games="sortedGames" />
-      <div id="games" v-bind:key=game.bggId v-for="game in sortedGames"><img v-bind:src="game.thumbnail">{{ game.name }}</div> 
+      <div id="games" v-bind:key=game.bggId v-for="game in sortedGames">
+        <img v-bind:src="game.thumbnail" />
+        <div  style="display: inline-block">
+        <h5>{{ game.name }}</h5>
+        Min: {{ game.playerCount.min }} <br />
+        Max: {{ game.playerCount.max }} <br />
+        Best at: {{ game.playerCount.best }} <br />
+        {{ game.mechanics }} <br />
+        {{ game.category }}
+        </div>
+      </div> 
     </div>
   </div>
 </template>

@@ -22,3 +22,4 @@ For development:
 
  ``` bash
   npm install vue-cli -g
+ ```

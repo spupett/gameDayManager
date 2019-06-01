@@ -5,27 +5,29 @@
       v-on:click="toggleActive(mechanism)" 
       v-bind:key="mechanism" v-for="mechanism in allMechanisms" 
       v-bind:class="{ 
-        'active' : activeMechanisms.indexOf(mechanism) !== -1,
-        'inactive' : activeMechanisms.indexOf(mechanism) === -1 }">{{ mechanism }}</div>
+        'active' : inactiveMechanisms.indexOf(mechanism) === -1,
+        'inactive' : inactiveMechanisms.indexOf(mechanism) !== -1 }">{{ mechanism }}</div>
   </div>
 </template>
 
 <script>
 
 import Games from './GameInfo';
+import { EventBus } from '../event-bus.js'
 
 export default {
   name: "mechanisms",
   props: ['games'],
   data() {
     return {
-      activeMechanisms: {}
+      inactiveMechanisms: []
     }
   },
   methods: {
     toggleActive(mechanism) {
-      const idx = this.activeMechanisms.indexOf(mechanism);
-      idx !== -1 ? this.activeMechanisms.splice(idx, 1) : this.activeMechanisms.push(mechanism);
+      const idx = this.inactiveMechanisms.indexOf(mechanism);
+      idx !== -1 ? this.inactiveMechanisms.splice(idx, 1) : this.inactiveMechanisms.push(mechanism);
+      EventBus.$emit('mechanism-filter-change', this.inactiveMechanisms);
     }
   },
   computed: {
@@ -37,7 +39,7 @@ export default {
         return acc;
       }, [])
       const uniqeMechanisms = Array.from(new Set(mechanisms).values()).sort();
-      this.activeMechanisms = JSON.parse(JSON.stringify(uniqeMechanisms));
+      this.inactiveMechanisms = [];
       return uniqeMechanisms;
     }
   },

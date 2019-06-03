@@ -4,7 +4,8 @@
       <label for="users">Comma seperated users</label>
       <input type="text" name="users" id="users" v-model="userList">
       <button v-on:click="showGames()">Get User</button>
-      <span>{{ showFilteredGames.length }}</span>
+      <span>Total Games: {{ games.length }}</span>
+      <span>Filtered Games: {{ showFilteredGames.length }}</span>
       <mechanisms-filter v-bind:games="this.games" />
       <div class="games" 
         v-bind:key=game.bggId        
@@ -35,7 +36,7 @@ export default {
       userNames: [],
       games: [],
       gameIDs: [],
-      inactiveMechanisms: [],
+      activeMechanisms: [],
     }
   },
   methods: {
@@ -50,24 +51,21 @@ export default {
       return showBestAtFirst(this.userNames.length, [...this.games].sort(compareGameNames));
     },
     showFilteredGames() {
-      if(this.inactiveMechanisms.length === 0) { return this.sortedGames }
+      if(this.activeMechanisms.length === 0) { return [] }
       
       const games = JSON.parse(JSON.stringify(this.sortedGames));
-      const filteredIdx = []
-      games.forEach((game, gameIdx) => {
-        if(game.mechanics.some((mechanic) => { return(this.inactiveMechanisms.includes(mechanic)); })) {
-            filteredIdx.push(gameIdx);
+      const filteredGames = [];
+      games.forEach((game) => {
+        if(game.mechanics.some((mechanic) => { return(this.activeMechanisms.includes(mechanic)); })) {
+            filteredGames.push(game);
           }
-      });
-      filteredIdx.reverse().forEach((idx) => {
-        games.splice(idx, 1);
-      });
-      return showBestAtFirst(this.userNames.length, [...games].sort(compareGameNames));
+      })
+      return showBestAtFirst(this.userNames.length, [...filteredGames].sort(compareGameNames));
     }
   },
   created() {
-    EventBus.$on('mechanism-filter-change', (inactiveMechanisms) => {
-      this.inactiveMechanisms = inactiveMechanisms;
+    EventBus.$on('mechanism-filter-change', (activeMechanisms) => {
+      this.activeMechanisms = activeMechanisms;
     })
   }
 };

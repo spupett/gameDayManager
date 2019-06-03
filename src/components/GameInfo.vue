@@ -9,16 +9,7 @@
       <div class="games" 
         v-bind:key=game.bggId        
         v-for="game in showFilteredGames">
-        <img v-bind:src="game.thumbnail" />
-        
-        <div style="display:inline-block">
-          <h5>{{ game.name }}</h5>
-          Min: {{ game.playerCount.min }} <br />
-          Max: {{ game.playerCount.max }} <br />
-          Best at: {{ game.playerCount.best }} <br />
-          {{ game.mechanics }} <br />
-          {{ game.category }}
-        </div>
+        <game v-bind:game="game" />
       </div>
     </div> 
   </div>
@@ -28,11 +19,14 @@
 import axios from "axios";
 import "babel-polyfill";
 import mechanismsFilter from './AvailableMechanisms.vue';
+import game from './Game.vue';
+
 import { EventBus } from '../event-bus.js';
 
 export default {
   components: {
     mechanismsFilter,
+    game,
   },
   name: 'gameData',
   data () {

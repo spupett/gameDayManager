@@ -4,13 +4,14 @@
       <label for="users">Comma seperated users</label>
       <input type="text" name="users" id="users" v-model="userList"> <br />
       <label for="bestAt">Number of players</label>
-      <input type="number" name="bestAt" id="bestAt" v-model="numberOfUsers"> <br />
+      <input type="number" name="bestAt" id="bestAt" v-model="numberOfPlayers"> <br />
       <button v-on:click="showGames()">Get Game List</button>
       <span>Total Games: {{ games.length }}</span>
       <span>Filtered Games: {{ showFilteredGames.length }}</span>
       <div id="player-filter">
         <label for="player-filter">Filter by player count</label>
-        <input type="checkbox" v-bind:checked="playerCountFilter" />
+        <input type="checkbox" v-bind:checked="playerCountFilter" v-model="playerCountFilter" />
+        {{playerCountFilter}}
       </div>
       <mechanisms-filter v-bind:games="this.games" />
       <div class="games" 
@@ -39,44 +40,60 @@ export default {
   data () {
     return {
       userList: 'spuppett, HKImpact',
-      userNames: [],
+      playerNames: [],
       games: [],
       gameIDs: [],
       activeMechanisms: [],
-      numberOfUsers: 0,
+      numberOfPlayers: 0,
       playerCountFilter: false
     }
   },
   methods: {
     async showGames() {
-      this.userNames = userNames(this.userList);
-      this.gamesIDs = await allGameIDs(this.userNames);
+      this.playerNames = playerNames(this.userList);
+      this.gamesIDs = await allGameIDs(this.playerNames);
       this.games = await getGameDetails(this.gamesIDs);
-      this.numberOfUsers = this.userNames.length;
+      this.numberOfPlayers = this.playerNames.length;
     }    
   },
   computed: {
+
     sortedGames() {
-      return showBestAtFirst(this.numberOfUsers, [...this.games].sort(compareGameNames));
+      return showBestAtFirst(this.numberOfPlayers, [...this.games].sort(compareGameNames));
     },
     showFilteredGames() {
       const filters = [
-        {
-          mechanism: (games) => {
-            if(this.activeMechanisms.length === 0) { return [] }
-                  
-            const filteredGames = [];
-            games.forEach((game) => {
-              if(game.mechanics.some((mechanic) => { return(this.activeMechanisms.includes(mechanic)); })) {
-                  filteredGames.push(game);
-                }
-            })
-            return filteredGames;
-          }
-        }
-      ];
+          { 
+            mechanism: (games) => {
+              if(this.activeMechanisms.length === 0) { return [] }
+                    
+              const filteredGames = [];
+              games.forEach((game) => {
+                if(game.mechanics.some((mechanic) => { return(this.activeMechanisms.includes(mechanic)); })) {
+                    filteredGames.push(game);
+                  }
+              });
+              return filteredGames;
+            }
+          },
+          {
+            playerCount: (games) => {
+              const filteredGames = [];
+              if(this.playerCountFilter) {
+                games.forEach((game) => {
+                  if(Number(game.playerCount.min) <= Number(this.numberOfPlayers) && Number(game.playerCount.max) >= Number(this.numberOfPlayers)) {
+                    filteredGames.push(game);
+                  }
+                });
+                return filteredGames;
+              }
+              else {
+                return games;
+              }
+            }
+          }];
       
-      return showBestAtFirst(this.numberOfUsers, [...filterGames(this.sortedGames, filters)].sort(compareGameNames));
+      return showBestAtFirst(this.numberOfPlayers, [...filterGames(this.sortedGames, filters)].sort(compareGameNames));
     }
   },
   created() {
@@ -117,7 +134,7 @@ function compareGameNames(g1, g2) {
   return (g1Name > g2Name) ? 1 : (g1Name < g2Name) ? -1 : 0;
 }
 
-function userNames(names) { 
+function playerNames(names) { 
   return names.split(',').map((name) => name.trim()); 
 }
 

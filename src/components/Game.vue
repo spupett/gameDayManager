@@ -8,8 +8,8 @@
       <div>Minimum Players: {{ game.playerCount.min }}</div>
       <div>Maximum Players: {{ game.playerCount.max }}</div>
       <div>Best At: {{ game.playerCount.best }}</div>
-      <div>Mechanisms: {{ game.mechanics }}</div>
-      <div>Categories: {{ game.category }}</div>
+      <div>Mechanisms: <div class="mechanism-tag" v-bind:key="mechanism" v-for="mechanism in game.mechanics">{{ mechanism }}</div></div>
+      <div>Categories: <div class="category-tag" v-bind:key="cat" v-for="cat in game.category">{{ cat }}</div></div>
     </div>
   </div>
 </template>
@@ -38,5 +38,13 @@ export default {
   .game .game-info {
     display: inline-block;
     vertical-align: top;
+  }
+
+  .mechanism-tag{
+    background-color: grey;
+  }
+
+  .category-tag{ 
+    background-color: burlywood;
   }
 </style>

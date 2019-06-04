@@ -30,7 +30,6 @@ export default {
       const idx = this.activeMechanisms.indexOf(mechanism);
       idx !== -1 ? this.activeMechanisms.splice(idx, 1) : this.activeMechanisms.push(mechanism);
       EventBus.$emit('mechanism-filter-change', this.activeMechanisms);
-      console.log(this.activeMechanisms);
     }
   },
   watch: {

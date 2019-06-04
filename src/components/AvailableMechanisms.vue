@@ -3,10 +3,10 @@
     <h3 class="title">Available Mechanisms</h3>
     <div class="btn-primary mechanism-tag" 
       v-on:click="toggleActive(mechanism)" 
-      v-bind:key="mechanism" v-for="mechanism in allMechanisms" 
+      v-bind:key="mechanism" v-for="mechanism in this.allMechanisms" 
       v-bind:class="{ 
-        'active' : inactiveMechanisms.indexOf(mechanism) === -1,
-        'inactive' : inactiveMechanisms.indexOf(mechanism) !== -1 }">{{ mechanism }}</div>
+        'active' : activeMechanisms.indexOf(mechanism) !== -1,
+        'inactive' : activeMechanisms.indexOf(mechanism) === -1 }">{{ mechanism }}</div>
   </div>
 </template>
 
@@ -20,18 +20,21 @@ export default {
   props: ['games'],
   data() {
     return {
-      inactiveMechanisms: []
+      allMechanisms: [],
+      activeMechanisms: [],
+      gameList: [],
     }
   },
   methods: {
     toggleActive(mechanism) {
-      const idx = this.inactiveMechanisms.indexOf(mechanism);
-      idx !== -1 ? this.inactiveMechanisms.splice(idx, 1) : this.inactiveMechanisms.push(mechanism);
-      EventBus.$emit('mechanism-filter-change', this.inactiveMechanisms);
+      const idx = this.activeMechanisms.indexOf(mechanism);
+      idx !== -1 ? this.activeMechanisms.splice(idx, 1) : this.activeMechanisms.push(mechanism);
+      EventBus.$emit('mechanism-filter-change', this.activeMechanisms);
+      console.log(this.activeMechanisms);
     }
   },
-  computed: {
-    allMechanisms() {
+  watch: {
+    games(newValue) {
       const mechanisms = this.games.reduce((acc, game) => {
         game.mechanics.forEach((mechanism) => {
           acc.push(mechanism);
@@ -39,9 +42,12 @@ export default {
         return acc;
       }, [])
       const uniqeMechanisms = Array.from(new Set(mechanisms).values()).sort();
-      this.inactiveMechanisms = [];
-      return uniqeMechanisms;
+      this.allMechanisms = JSON.parse(JSON.stringify(uniqeMechanisms));
+      EventBus.$emit('mechanism-filter-change', []);
     }
+  },
+  mounted() {
+    
   },
 }
 </script>

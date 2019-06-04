@@ -5,9 +5,13 @@
       <input type="text" name="users" id="users" v-model="userList"> <br />
       <label for="bestAt">Number of players</label>
       <input type="number" name="bestAt" id="bestAt" v-model="numberOfUsers"> <br />
-      <button v-on:click="showGames()">Get User</button>
+      <button v-on:click="showGames()">Get Game List</button>
       <span>Total Games: {{ games.length }}</span>
       <span>Filtered Games: {{ showFilteredGames.length }}</span>
+      <div id="player-filter">
+        <label for="player-filter">Filter by player count</label>
+        <input type="checkbox" v-bind:checked="playerCountFilter" />
+      </div>
       <mechanisms-filter v-bind:games="this.games" />
       <div class="games" 
         v-bind:key=game.bggId        
@@ -39,7 +43,8 @@ export default {
       games: [],
       gameIDs: [],
       activeMechanisms: [],
-      numberOfUsers: 0
+      numberOfUsers: 0,
+      playerCountFilter: false
     }
   },
   methods: {
@@ -55,18 +60,23 @@ export default {
       return showBestAtFirst(this.numberOfUsers, [...this.games].sort(compareGameNames));
     },
     showFilteredGames() {
-      console.log('filtering');
-      this.numberOfUsers;
-      if(this.activeMechanisms.length === 0) { return [] }
-      
-      const games = JSON.parse(JSON.stringify(this.sortedGames));
-      const filteredGames = [];
-      games.forEach((game) => {
-        if(game.mechanics.some((mechanic) => { return(this.activeMechanisms.includes(mechanic)); })) {
-            filteredGames.push(game);
+      const filters = [
+        {
+          mechanism: (games) => {
+            if(this.activeMechanisms.length === 0) { return [] }
+                  
+            const filteredGames = [];
+            games.forEach((game) => {
+              if(game.mechanics.some((mechanic) => { return(this.activeMechanisms.includes(mechanic)); })) {
+                  filteredGames.push(game);
+                }
+            })
+            return filteredGames;
           }
-      })
-      return showBestAtFirst(this.numberOfUsers, [...filteredGames].sort(compareGameNames));
+        }
+      ];
+      
+      return showBestAtFirst(this.numberOfUsers, [...filterGames(this.sortedGames, filters)].sort(compareGameNames));
     }
   },
   created() {
@@ -75,6 +85,15 @@ export default {
     })
   }
 };
+
+function filterGames(games, filters) {
+  let filteredGames = games;
+  filters.forEach((filter) => {
+    const filterName = Object.keys(filter)[0];
+    filteredGames = (filter[filterName](filteredGames));
+  })
+  return filteredGames;
+}
 
 function showBestAtFirst(number, games) {
   const bestAt = [];

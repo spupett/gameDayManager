@@ -2,7 +2,9 @@
   <div>
     <div id="name">
       <label for="users">Comma seperated users</label>
-      <input type="text" name="users" id="users" v-model="userList">
+      <input type="text" name="users" id="users" v-model="userList"> <br />
+      <label for="bestAt">Number of players</label>
+      <input type="number" name="bestAt" id="bestAt" v-model="numberOfUsers"> <br />
       <button v-on:click="showGames()">Get User</button>
       <span>Total Games: {{ games.length }}</span>
       <span>Filtered Games: {{ showFilteredGames.length }}</span>
@@ -37,6 +39,7 @@ export default {
       games: [],
       gameIDs: [],
       activeMechanisms: [],
+      numberOfUsers: 0
     }
   },
   methods: {
@@ -44,13 +47,16 @@ export default {
       this.userNames = userNames(this.userList);
       this.gamesIDs = await allGameIDs(this.userNames);
       this.games = await getGameDetails(this.gamesIDs);
+      this.numberOfUsers = this.userNames.length;
     }    
   },
   computed: {
     sortedGames() {
-      return showBestAtFirst(this.userNames.length, [...this.games].sort(compareGameNames));
+      return showBestAtFirst(this.numberOfUsers, [...this.games].sort(compareGameNames));
     },
     showFilteredGames() {
+      console.log('filtering');
+      this.numberOfUsers;
       if(this.activeMechanisms.length === 0) { return [] }
       
       const games = JSON.parse(JSON.stringify(this.sortedGames));
@@ -60,7 +66,7 @@ export default {
             filteredGames.push(game);
           }
       })
-      return showBestAtFirst(this.userNames.length, [...filteredGames].sort(compareGameNames));
+      return showBestAtFirst(this.numberOfUsers, [...filteredGames].sort(compareGameNames));
     }
   },
   created() {
@@ -74,7 +80,7 @@ function showBestAtFirst(number, games) {
   const bestAt = [];
   const others = [];
   games.forEach((game, idx) => {
-    if(Number(game.playerCount.best) === number ) {
+    if(Number(game.playerCount.best) === Number(number) ) {
       bestAt.push(game);
     }
     else {

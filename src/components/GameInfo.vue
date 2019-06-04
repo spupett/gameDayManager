@@ -44,7 +44,7 @@ export default {
       games: [],
       gameIDs: [],
       activeMechanisms: [],
-      numberOfPlayers: 0,
+      numberOfPlayers: 2,
       playerCountFilter: false
     }
   },

@@ -9,8 +9,6 @@
 </template>
 
 <script>
-
-
 export default {
   data () {
     return {
@@ -18,3 +16,21 @@ export default {
   }
 }
 </script>
+
+<style>
+  .mechanism-tag {
+    display: inline-block;
+    border-radius: 6px;
+    margin: 3px 5px 3px;
+    padding: 0px 4px;
+    cursor: default;
+  }
+
+  .category-tag {
+    display: inline-block;
+    border-radius: 6px;
+    margin: 3px 5px 3px;
+    padding: 0px 4px;
+    cursor: default;
+  }
+</style>

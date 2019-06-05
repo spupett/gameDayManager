@@ -28,9 +28,7 @@ import axios from "axios";
 import "babel-polyfill";
 import mechanismsFilter from './AvailableMechanisms.vue';
 import game from './Game.vue';
-
 import { EventBus } from '../event-bus.js';
-
 export default {
   components: {
     mechanismsFilter,
@@ -57,7 +55,6 @@ export default {
     }    
   },
   computed: {
-
     sortedGames() {
       return showBestAtFirst(this.numberOfPlayers, [...this.games].sort(compareGameNames));
     },
@@ -102,7 +99,6 @@ export default {
     })
   }
 };
-
 function filterGames(games, filters) {
   let filteredGames = games;
   filters.forEach((filter) => {
@@ -111,7 +107,6 @@ function filterGames(games, filters) {
   })
   return filteredGames;
 }
-
 function showBestAtFirst(number, games) {
   const bestAt = [];
   const others = [];
@@ -123,21 +118,16 @@ function showBestAtFirst(number, games) {
       others.push(game);
     }
   });
-
   return bestAt.concat(others);
 }
-
 function compareGameNames(g1, g2) {
   const g1Name = g1.name.toUpperCase();
   const g2Name = g2.name.toUpperCase();
-
   return (g1Name > g2Name) ? 1 : (g1Name < g2Name) ? -1 : 0;
 }
-
 function playerNames(names) { 
   return names.split(',').map((name) => name.trim()); 
 }
-
 async function getUsersGameList(name) {
    return axios({
       method: "GET",
@@ -146,22 +136,18 @@ async function getUsersGameList(name) {
       return results.data;
     })
 }
-
 async function allGameIDs(names) {
   const allGameIDs = await Promise.all(names.map((name) => {
     return getUsersGameList(name).then((res) => {
         return res.map((game) => { return game.id; });      
       });
   }));
-
   const combined = allGameIDs.reduce((acc, list) => {
     return acc.concat(list);
   }, [])
-
   //get rid of duplicates
   return Array.from(new Set(combined).values());
 }
-
 async function getGameDetails(games) {
   return axios.get('http://localhost:3000/api/v1/games/', 
     {
@@ -175,5 +161,4 @@ async function getGameDetails(games) {
 
 
 <style lang="css">
-
 </style>

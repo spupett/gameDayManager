@@ -10,8 +10,11 @@
       <span>Filtered Games: {{ showFilteredGames.length }}</span>
       <div id="player-filter">
         <label for="player-filter">Filter by player count</label>
-        <input type="checkbox" v-bind:checked="playerCountFilter" v-model="playerCountFilter" />
-        {{playerCountFilter}}
+        <input type="checkbox" name="player-filter" v-bind:checked="playerCountFilter" v-model="playerCountFilter" />
+      </div>
+      <div id="expansion-filter">
+        <label for="expansion-filter">Discard Expansions</label>
+        <input type="checkbox" name="expansion-filter" v-bind:checked="expansionFilter" v-model="expansionFilter" />
       </div>
       <mechanisms-filter v-bind:games="this.games" />
       <div class="games" 
@@ -43,7 +46,8 @@ export default {
       gameIDs: [],
       activeMechanisms: [],
       numberOfPlayers: 2,
-      playerCountFilter: false
+      playerCountFilter: false,
+      expansionFilter: false
     }
   },
   methods: {
@@ -60,35 +64,51 @@ export default {
     },
     showFilteredGames() {
       const filters = [
-          { 
-            mechanism: (games) => {
-              if(this.activeMechanisms.length === 0) { return [] }
-                    
-              const filteredGames = [];
+        { 
+          mechanism: (games) => {
+            if(this.activeMechanisms.length === 0) { return [] }
+                  
+            const filteredGames = [];
+            games.forEach((game) => {
+              if(game.mechanics.some((mechanic) => { return(this.activeMechanisms.includes(mechanic)); })) {
+                  filteredGames.push(game);
+                }
+            });
+            return filteredGames;
+          }
+        },
+        {
+          playerCount: (games) => {
+            const filteredGames = [];
+            if(this.playerCountFilter) {
               games.forEach((game) => {
-                if(game.mechanics.some((mechanic) => { return(this.activeMechanisms.includes(mechanic)); })) {
-                    filteredGames.push(game);
-                  }
+                if(Number(game.playerCount.min) <= Number(this.numberOfPlayers) && Number(game.playerCount.max) >= Number(this.numberOfPlayers)) {
+                  filteredGames.push(game);
+                }
               });
               return filteredGames;
             }
-          },
-          {
-            playerCount: (games) => {
-              const filteredGames = [];
-              if(this.playerCountFilter) {
-                games.forEach((game) => {
-                  if(Number(game.playerCount.min) <= Number(this.numberOfPlayers) && Number(game.playerCount.max) >= Number(this.numberOfPlayers)) {
-                    filteredGames.push(game);
-                  }
-                });
-                return filteredGames;
-              }
-              else {
-                return games;
-              }
+            else {
+              return games;
             }
-          }];
+          }
+        },
+        {
+          expansion: (games) => {
+            const filteredGames = [];
+            if(this.expansionFilter) {
+              games.forEach((game) => {
+                if(!game.category.includes('Expansion for Base-game')) {
+                  filteredGames.push(game);
+                }
+              });
+              return filteredGames
+            }
+            else {
+              return games;
+            }
+          }
+        }];
       
       return showBestAtFirst(this.numberOfPlayers, [...filterGames(this.sortedGames, filters)].sort(compareGameNames));
     }

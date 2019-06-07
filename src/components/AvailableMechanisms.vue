@@ -51,7 +51,7 @@ export default {
 }
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
   #mechanisms-box {
     width: 95%;
     margin: auto;

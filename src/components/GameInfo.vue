@@ -177,8 +177,3 @@ async function getGameDetails(games) {
     }).then((results) => { return results.data; })
 }
 </script>
-
-
-
-<style lang="css">
-</style>

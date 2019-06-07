@@ -17,7 +17,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
   .mechanism-tag {
     display: inline-block;
     border-radius: 6px;

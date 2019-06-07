@@ -104,4 +104,6 @@ if (process.env.NODE_ENV === 'production') {
             minimize: true
         })
     ])
+} else {
+    module.exports.output.publicPath = '';
 }

@@ -13,6 +13,7 @@ npm run dev
 
 # build for production with minification
 npm run build
+firebase deploy #to deploy to firebase
 ```
 
 For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
@@ -22,4 +23,10 @@ For development:
 
  ``` bash
   npm install vue-cli -g
+  npm install firebase-tools -g
+  https://github.com/firebase/firebase-tools#firebase-cli----
  ```
+
+ Need a .firebaserc file and firebase.json
+
+

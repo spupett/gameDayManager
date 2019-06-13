@@ -91,7 +91,8 @@ if (process.env.NODE_ENV === 'production') {
     module.exports.plugins = (module.exports.plugins || []).concat([
         new webpack.DefinePlugin({
             'process.env': {
-                NODE_ENV: '"production"'
+                NODE_ENV: '"production"',
+                FETCH_FROM: '"https://gamegroupmanager.herokuapp.com"',
             }
         }),
         new webpack.optimize.UglifyJsPlugin({
@@ -102,6 +103,16 @@ if (process.env.NODE_ENV === 'production') {
         }),
         new webpack.LoaderOptionsPlugin({
             minimize: true
+        })
+    ])
+} else if (process.env.NODE_ENV === 'development') {
+    module.exports.output.publicPath = ''
+    module.exports.plugins = (module.exports.plugins || []).concat([
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: '"development"',
+                FETCH_FROM: '"http://localhost:5000"',
+            }
         })
     ])
 }

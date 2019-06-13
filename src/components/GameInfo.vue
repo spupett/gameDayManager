@@ -32,6 +32,9 @@ import "babel-polyfill";
 import mechanismsFilter from './AvailableMechanisms.vue';
 import game from './Game.vue';
 import { EventBus } from '../event-bus.js';
+
+const fetch = process.env.FETCH_FROM;
+
 export default {
   components: {
     mechanismsFilter,
@@ -151,7 +154,7 @@ function playerNames(names) {
 async function getUsersGameList(name) {
    return axios({
       method: "GET",
-      "url": `http://localhost:3000/api/v1/users/${name}/games`
+      "url": `${fetch}/api/v1/users/${name}/games`
     }).then((results) => {
       return results.data;
     })
@@ -169,7 +172,7 @@ async function allGameIDs(names) {
   return Array.from(new Set(combined).values());
 }
 async function getGameDetails(games) {
-  return axios.get('http://localhost:3000/api/v1/games/', 
+  return axios.get(`${fetch}/api/v1/games/`, 
     {
       params: {
         gameIdList: JSON.stringify(games)
@@ -177,8 +180,3 @@ async function getGameDetails(games) {
     }).then((results) => { return results.data; })
 }
 </script>
-
-
-
-<style lang="css">
-</style>

@@ -151,7 +151,7 @@ function playerNames(names) {
 async function getUsersGameList(name) {
    return axios({
       method: "GET",
-      "url": `http://localhost:3000/api/v1/users/${name}/games`
+      "url": `https://gamegroupmanager.herokuapp.com/api/v1/users/${name}/games`
     }).then((results) => {
       return results.data;
     })
@@ -169,7 +169,7 @@ async function allGameIDs(names) {
   return Array.from(new Set(combined).values());
 }
 async function getGameDetails(games) {
-  return axios.get('http://localhost:3000/api/v1/games/', 
+  return axios.get('https://gamegroupmanager.herokuapp.com/api/v1/games/', 
     {
       params: {
         gameIdList: JSON.stringify(games)

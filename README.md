@@ -24,6 +24,7 @@ For development:
  ``` bash
   npm install vue-cli -g
   npm install firebase-tools -g
+  https://github.com/firebase/firebase-tools#firebase-cli----
  ```
 
  Need a .firebaserc file and firebase.json

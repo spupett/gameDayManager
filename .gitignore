@@ -11,6 +11,7 @@ debug.log
 *.ntvs*
 *.njsproj
 *.sln
+.vscode/
 
 # hosting files
 .firebaserc

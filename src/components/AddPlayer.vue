@@ -2,22 +2,26 @@
   <div>
     <h1>Add a user</h1>
     <div id="bggName">
-      <label for="bggName">BGG Name</label>
-      <input name="bggName" type="text" v-model="bggName" />
+      <label class="form-control-label" for="bggName">BGG Name</label>
+      <input name="bggName" type="text" v-model="bggName" class="form-control form-control-warning"  v-bind:class="{ 'is-invalid': attemptSubmit && missingBggName}"/>
+      <div class="invalid-feedback">This field is required.</div>
     </div>
     <div id="firstName">
-      <label for="firstName">First Name</label>
-      <input name="firstName" type="text" v-model="firstName" />
+      <label class="form-control-label" for="firstName">First Name</label>
+      <input name="firstName" type="text" v-model="firstName" class="form-control form-control-warning" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstName}" />
+      <div class="invalid-feedback">This field is required.</div>
     </div>
     <div id="lastName">
-      <label for="lastName">Last Name</label>
-      <input name="lastName" type="text" v-model="lastName" />
+      <label class="form-control-label" for="lastName">Last Name</label>
+      <input name="lastName" type="text" v-model="lastName" class="form-control form-control-warning" v-bind:class="{ 'is-invalid': attemptSubmit && missingLastName}" />
+      <div class="invalid-feedback">This field is required.</div>
     </div>
     <div id="email">
-      <label for="email">Email</label>
-      <input name="email" type="text" v-model="email" />
+      <label class="form-control-label" for="email">Email</label>
+      <input name="email" type="text" v-model="email" class="form-control form-control-warning"  v-bind:class="{ 'is-invalid': attemptSubmit && (missingEmail || badEmail)}" />
+      <div class="invalid-feedback">This field is required.</div>
     </div>
-    <button v-on:click="submitPerson()">Add Person</button>
+    <button v-on:click="validateForm">Add Person</button>
   </div>
 </template>
 
@@ -30,13 +34,21 @@ export default {
   name: 'addPlayer',
   data() {
     return {
-      bggName: 'webs05',
-      firstName: 'Jon',
-      lastName: 'Weber',
-      email: 'asf@asdf.com'
+      bggName: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      attemptSubmit: false
     }
   },
   methods: { 
+    validateForm(event) {
+      this.attemptSubmit = true;
+      if(this.missingEmail || this.missingBggName || this.missingFirstName || this.missingLastName || this.badEmail) {
+        console.log('no go');
+        event.preventDefault();
+      }
+    },
     async submitPerson() {
       return axios({
         method: "POST",
@@ -53,6 +65,23 @@ export default {
       })
     }
   },
-  computed: { }
+  computed: { 
+    missingBggName() {
+      return this.bggName === '';
+    },
+    missingFirstName() {
+      return this.firstName === '';
+    },
+    missingLastName() {
+      return this.lastName === '';
+    },
+    missingEmail() {
+      return this.email === '';
+    },
+    badEmail() {
+      const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return !re.test(this.email);
+    }
+  }
 }
 </script>

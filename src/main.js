@@ -8,7 +8,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import BootstrapVue from 'bootstrap-vue'
 import router from './router'
 
-
 Vue.use(BootstrapVue)
 Vue.use(AsyncComputed)
 

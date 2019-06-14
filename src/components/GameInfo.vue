@@ -1,10 +1,11 @@
 <template>
-  <div>
+  <div class="container">
     <div id="name">
-      <label for="users">Comma seperated users</label>
-      <input type="text" name="users" id="users" v-model="userList"> <br />
-      <label for="bestAt">Number of players</label>
-      <input type="number" name="bestAt" id="bestAt" v-model="numberOfPlayers"> <br />
+      <player-list />
+
+      <label for="users">Comma seperated users:</label>
+      <label for="bestAt">{{ userList }}</label> <br />
+      <input type="number" name="bestAt" id="bestAt" v-model="playerCount"> <br />
       <button v-on:click="showGames()">Get Game List</button>
       <span>Total Games: {{ games.length }}</span>
       <span>Filtered Games: {{ showFilteredGames.length }}</span>
@@ -31,6 +32,7 @@ import axios from "axios";
 import "babel-polyfill";
 import mechanismsFilter from './AvailableMechanisms.vue';
 import game from './Game.vue';
+import playerList from './PlayerList';
 import { EventBus } from '../event-bus.js';
 
 const fetch = process.env.FETCH_FROM;
@@ -39,16 +41,15 @@ export default {
   components: {
     mechanismsFilter,
     game,
+    playerList
   },
   name: 'gameData',
   data () {
     return {
-      userList: 'spuppett, HKImpact',
       playerNames: [],
       games: [],
       gameIDs: [],
       activeMechanisms: [],
-      numberOfPlayers: 2,
       playerCountFilter: false,
       expansionFilter: false
     }
@@ -114,14 +115,34 @@ export default {
         }];
       
       return showBestAtFirst(this.numberOfPlayers, [...filterGames(this.sortedGames, filters)].sort(compareGameNames));
+    },
+    userList() {
+      return this.playerNames.join(',');
+    },
+    playerCount() {
+      return this.playerNames.length;
     }
   },
   created() {
     EventBus.$on('mechanism-filter-change', (activeMechanisms) => {
       this.activeMechanisms = activeMechanisms;
+    }),
+    EventBus.$on('player-toggled', (player) => {
+      this.playerNames = updateList(this.playerNames, player)
     })
   }
 };
+
+function updateList(list, item) {
+  if(list.indexOf(item) !== -1) {
+    const idx = list.indexOf(item);
+    list.splice(idx, 1);
+    return list;
+  }
+  list.push(item);
+  return list;
+}
+
 function filterGames(games, filters) {
   let filteredGames = games;
   filters.forEach((filter) => {
@@ -169,7 +190,7 @@ async function allGameIDs(names) {
     return acc.concat(list);
   }, [])
   //get rid of duplicates
-  return Array.from(new Set(combined).values());
+  return dedupArray(combined);
 }
 async function getGameDetails(games) {
   return axios.get(`${fetch}/api/v1/games/`, 
@@ -178,5 +199,9 @@ async function getGameDetails(games) {
         gameIdList: JSON.stringify(games)
       }
     }).then((results) => { return results.data; })
+}
+
+function dedupArray(arr) {
+  return Array.from(new Set(arr).values());
 }
 </script>

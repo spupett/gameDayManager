@@ -3,7 +3,7 @@
     <div class="users"
       v-bind:key=user.bggName
       v-for="user in users">
-        <div>{{ user.bggName }} </div>
+        <div><a href="aaaa">{{ user.bggName }}</a></div>
     </div>
   </div>
 </template>

@@ -12,9 +12,6 @@
 </template>
 
 <script>
-import axios from "axios";
-
-const fetch = process.env.FETCH_FROM;
 import { EventBus } from '../event-bus.js'
 
 export default {
@@ -29,30 +26,12 @@ export default {
   },
   asyncComputed: {
     async users() {
-      const userList = await getUsers();
-      return userList;
+      return await this.$fetchFromGGM('api/v1/users/', 'GET', (f) => { return f.data } )
     }
   }
 }
 
-async function getUsers() {
-  document.body.classList.add('fetching');
-  return axios({
-    method: "GET",
-    "url": `${fetch}/api/v1/users/`
-  }).then((results) => {
-    document.body.classList.remove('fetching');
-    return results.data;
-  })
-}
 </script>
-
-<style lang="scss">
-  .fetching {
-    cursor: progress;
-  }
-</style>
-
 
 <style lang="scss" scoped>
   .users {

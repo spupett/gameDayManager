@@ -1,16 +1,17 @@
+import axios from 'axios'
 
-import axios from 'axios';
+const fetch = process.env.FETCH_FROM
 
 export default {
   install (Vue, options) {
-    Vue.prototype.$fetch = (url, method, done) => {
+    Vue.prototype.$fetchFromGGM = async (url, method, done) => {
       document.body.classList.add('fetching')
       return axios({
         method: method,
-        'url': url
+        'url': `${fetch}/${url}/`
       }).then((results) => {
         document.body.classList.remove('fetching')
-        done(results)
+        return done(results)
       })
     }
   }

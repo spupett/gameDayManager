@@ -6,6 +6,8 @@ import fetch from './plugins/fetch'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+import './assets/css/style.css'
+
 import BootstrapVue from 'bootstrap-vue'
 import router from './router'
 

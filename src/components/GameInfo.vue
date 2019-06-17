@@ -60,7 +60,7 @@ export default {
       this.gamesIDs = await allGameIDs(this.playerNames);
       this.games = await getGameDetails(this.gamesIDs);
       this.numberOfPlayers = this.playerNames.length;
-    }    
+    },
   },
   computed: {
     sortedGames() {
@@ -173,12 +173,7 @@ function playerNames(names) {
   return names.split(',').map((name) => name.trim()); 
 }
 async function getUsersGameList(name) {
-   return axios({
-      method: "GET",
-      "url": `${fetch}/api/v1/users/${name}/games`
-    }).then((results) => {
-      return results.data;
-    })
+  return Vue.fetch(`api/v1/users/${name}/games`, 'GET', (f) => { return f.data })
 }
 async function allGameIDs(names) {
   const allGameIDs = await Promise.all(names.map((name) => {

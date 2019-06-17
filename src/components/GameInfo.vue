@@ -28,14 +28,11 @@
 </template>
 
 <script>
-import axios from "axios";
 import "babel-polyfill";
 import mechanismsFilter from './AvailableMechanisms.vue';
 import game from './Game.vue';
 import playerList from './PlayerList';
 import { EventBus } from '../event-bus.js';
-
-const fetch = process.env.FETCH_FROM;
 
 export default {
   components: {
@@ -57,10 +54,28 @@ export default {
   methods: {
     async showGames() {
       this.playerNames = playerNames(this.userList);
-      this.gamesIDs = await allGameIDs(this.playerNames);
-      this.games = await getGameDetails(this.gamesIDs);
+      this.gamesIDs = await this.allGameIDs(this.playerNames);
+      this.games = await this.getGameDetails(this.gamesIDs);
       this.numberOfPlayers = this.playerNames.length;
     },
+    async allGameIDs(names) {
+      const allGameIDs = await Promise.all(names.map((name) => {
+          return this.getUsersGameList(name).then((res) => {
+              return res.map((game) => { return game.id; });      
+            });
+        }));
+        const combined = allGameIDs.reduce((acc, list) => {
+          return acc.concat(list);
+        }, [])
+        //get rid of duplicates
+        return dedupArray(combined);
+    },
+    async getUsersGameList(name) {
+      return await this.$fetchFromGGM(`api/v1/users/${name}/games`, 'GET', (f) => { return f.data } );
+    },
+    async getGameDetails(games) {
+      return await this.$fetchFromGGM(`api/v1/games`, 'POST', (f) => { return f.data }, { gameList: JSON.stringify(games)} )
+    }
   },
   computed: {
     sortedGames() {
@@ -171,29 +186,6 @@ function compareGameNames(g1, g2) {
 }
 function playerNames(names) { 
   return names.split(',').map((name) => name.trim()); 
-}
-async function getUsersGameList(name) {
-  return Vue.fetch(`api/v1/users/${name}/games`, 'GET', (f) => { return f.data })
-}
-async function allGameIDs(names) {
-  const allGameIDs = await Promise.all(names.map((name) => {
-    return getUsersGameList(name).then((res) => {
-        return res.map((game) => { return game.id; });      
-      });
-  }));
-  const combined = allGameIDs.reduce((acc, list) => {
-    return acc.concat(list);
-  }, [])
-  //get rid of duplicates
-  return dedupArray(combined);
-}
-async function getGameDetails(games) {
-  return axios.get(`${fetch}/api/v1/games/`, 
-    {
-      params: {
-        gameIdList: JSON.stringify(games)
-      }
-    }).then((results) => { return results.data; })
 }
 
 function dedupArray(arr) {

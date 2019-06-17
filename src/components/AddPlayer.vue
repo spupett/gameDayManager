@@ -30,9 +30,6 @@
 </template>
 
 <script>
-import axios from "axios";
-
-const fetch = process.env.FETCH_FROM;
 
 export default {
   name: 'addPlayer',
@@ -58,18 +55,11 @@ export default {
       });
     },
     async submitPerson() {
-      return axios({
-        method: "POST",
-        "url": `${fetch}/api/v1/users/`,
-        data: {
-          "bggName": this.bggName,
+      return this.$fetchFromGGM('api/v1/users', 'POST', (f) => { return f.data}, 
+        { "bggName": this.bggName,
           "firstName": this.firstName,
           "lastName": this.lastName,
-          "email": this.email
-        }
-      }).then((results) => {
-        return results.data;
-      })
+          "email": this.email})
     }
   },
   computed: { 

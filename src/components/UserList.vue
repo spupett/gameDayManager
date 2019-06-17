@@ -9,9 +9,6 @@
 </template>
 
 <script>
-import axios from "axios";
-
-const fetch = process.env.FETCH_FROM;
 
 export default {
   name: 'userList',
@@ -22,24 +19,11 @@ export default {
   computed: { },
   asyncComputed: {
     async users() {
-      const userList = await getUsers();
-      return userList;
+      return await this.$fetchFromGGM('api/v1/users/', 'GET', (f) => { return f.data } )
     }
   }
-};
-
-async function getUsers() {
-  return axios({
-    method: "GET",
-    "url": `${fetch}/api/v1/users/`
-  }).then((results) => {
-    return results.data;
-  })
 }
+
 </script>
-
-<style lang="scss" scoped>
-
-</style>
 
 

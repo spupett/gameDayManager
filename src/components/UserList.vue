@@ -22,6 +22,7 @@ export default {
   computed: { },
   asyncComputed: {
     async users() {
+      console.log('here1');
       const userList = await getUsers();
       return userList;
     }
@@ -29,17 +30,21 @@ export default {
 };
 
 async function getUsers() {
+  document.body.classList.add('fetching');
   return axios({
     method: "GET",
     "url": `${fetch}/api/v1/users/`
   }).then((results) => {
     return results.data;
+    document.body.classList.remove('fetching');
   })
 }
 </script>
 
 <style lang="scss" scoped>
-
+  .fetching {
+    cursor: progress;
+  }
 </style>
 
 

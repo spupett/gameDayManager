@@ -17,7 +17,9 @@ import { EventBus } from '../event-bus.js'
 
 export default {
   name: "mechanisms",
-  props: ['games'],
+  props: { 
+    games: Array
+  },
   data() {
     return {
       allMechanisms: [],
@@ -44,10 +46,7 @@ export default {
       this.allMechanisms = JSON.parse(JSON.stringify(uniqeMechanisms));
       EventBus.$emit('mechanism-filter-change', []);
     }
-  },
-  mounted() {
-    
-  },
+  }
 }
 </script>
 

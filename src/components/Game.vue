@@ -3,8 +3,8 @@
     <h5>{{ game.name }}</h5>
     <div class="game-image">
       <a v-bind:href="game.bggLink" target="_blank">
-        <img v-if="game.thumbnail.length > 0" v-bind:src="game.thumbnail" />
-        <img v-else src="https://fillmurray.com/g/150/150" /></a>
+        <img v-bind:src="thumbnail" />
+      </a>
     </div>
     <div class="game-info">
       <div>Minimum Players: {{ game.playerCount.min }}</div>
@@ -18,7 +18,18 @@
 
 <script>
 export default {
-  props: ['game']
+  props: {
+    game: Object
+  },
+  computed: {
+    thumbnail() {
+      if( this.game.thumbnail && this.game.thumbnail.length > 0 ) {
+        return this.game.thumbnail
+      } else {
+        return 'https://fillmurray.com/g/150/150'
+      }
+    }
+  }
 }
 </script>
 

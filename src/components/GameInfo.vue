@@ -5,7 +5,7 @@
 
       <label for="users">Comma seperated users:</label>
       <label for="bestAt">{{ userList }}</label> <br />
-      <input type="number" name="bestAt" id="bestAt" v-model="playerCount"> <br />
+      <input type="number" name="bestAt" id="bestAt" v-model="numberOfPlayers"> <br />
       <button v-on:click="showGames()">Get Game List</button>
       <span>Total Games: {{ games.length }}</span>
       <span>Filtered Games: {{ showFilteredGames.length }}</span>
@@ -44,7 +44,8 @@ export default {
       gameIDs: [],
       activeMechanisms: [],
       playerCountFilter: false,
-      expansionFilter: false
+      expansionFilter: false,
+      numberOfPlayers: 0
     }
   },
   methods: {
@@ -75,7 +76,7 @@ export default {
   },
   computed: {
     sortedGames() {
-      return showBestAtFirst(this.numberOfPlayers, [...this.games].sort(compareGameNames));
+      return showBestAtFirst(this.numberOfPlayers, this.$sortByGameName([...this.games]) );
     },
     showFilteredGames() {
       const filters = [
@@ -125,13 +126,10 @@ export default {
           }
         }];
       
-      return showBestAtFirst(this.numberOfPlayers, [...filterGames(this.sortedGames, filters)].sort(compareGameNames));
+      return showBestAtFirst(this.numberOfPlayers, this.$sortByGameName([...filterGames(this.sortedGames, filters)]));
     },
     userList() {
       return this.playerNames.join(',');
-    },
-    playerCount() {
-      return this.playerNames.length;
     }
   },
   created() {
@@ -140,6 +138,7 @@ export default {
     }),
     EventBus.$on('player-toggled', (player) => {
       this.playerNames = updateList(this.playerNames, player)
+      this.numberOfPlayers = this.playerNames.length;
     })
   }
 };
@@ -162,6 +161,7 @@ function filterGames(games, filters) {
   })
   return filteredGames;
 }
+
 function showBestAtFirst(number, games) {
   const bestAt = [];
   const others = [];
@@ -175,11 +175,7 @@ function showBestAtFirst(number, games) {
   });
   return bestAt.concat(others);
 }
-function compareGameNames(g1, g2) {
-  const g1Name = g1.name.toUpperCase();
-  const g2Name = g2.name.toUpperCase();
-  return (g1Name > g2Name) ? 1 : (g1Name < g2Name) ? -1 : 0;
-}
+
 function playerNames(names) { 
   return names.split(',').map((name) => name.trim()); 
 }

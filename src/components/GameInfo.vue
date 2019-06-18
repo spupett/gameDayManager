@@ -18,11 +18,7 @@
         <input type="checkbox" name="expansion-filter" v-bind:checked="expansionFilter" v-model="expansionFilter" />
       </div>
       <mechanisms-filter v-bind:games="this.games" />
-      <div class="games" 
-        v-bind:key=game.bggId        
-        v-for="game in showFilteredGames">
-        <game v-bind:game="game" />
-      </div>
+      <game-list v-bind:game-data="showFilteredGames" />
     </div> 
   </div>
 </template>
@@ -30,15 +26,15 @@
 <script>
 import "babel-polyfill";
 import mechanismsFilter from './AvailableMechanisms.vue';
-import game from './Game.vue';
 import playerList from './PlayerList';
+import gameList from './GameList';
 import { EventBus } from '../event-bus.js';
 
 export default {
   components: {
     mechanismsFilter,
-    game,
-    playerList
+    playerList,
+    gameList
   },
   name: 'gameData',
   data () {

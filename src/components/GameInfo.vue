@@ -4,8 +4,8 @@
 
       <player-list />
 
+      <button v-bind:disabled=isDisabled v-on:click="showGames()">Get Game List</button> <br />
       <label for="bestAt">Number of Players:</label> <br />
-      <button v-on:click="showGames()">Get Game List</button>
       <input type="number" name="bestAt" id="bestAt" v-model="numberOfPlayers"> <br />
       <span>Total Games: {{ games.length }}</span>
       <span>Filtered Games: {{ showFilteredGames.length }}</span>
@@ -14,7 +14,7 @@
         <input type="checkbox" name="player-filter" v-bind:checked="playerCountFilter" v-model="playerCountFilter" />
       </div>
       <div id="expansion-filter">
-        <label for="expansion-filter">Discard Expansions</label>
+        <label for="expansion-filter">Filter out Expansions</label>
         <input type="checkbox" name="expansion-filter" v-bind:checked="expansionFilter" v-model="expansionFilter" />
       </div>
 
@@ -42,21 +42,23 @@ export default {
   name: 'gameData',
   data () {
     return {
-      playerNames: [],
       games: [],
       gameIDs: [],
       activeMechanisms: [],
       playerCountFilter: false,
       expansionFilter: false,
-      numberOfPlayers: 0
+      numberOfPlayers: 0,
+      playerList: []
     }
   },
   methods: {
     async showGames() {
-      this.playerNames = playerNames(this.userList);
-      this.gamesIDs = await this.allGameIDs(this.playerNames);
+      const currentNumberOfPlayers = this.numberOfPlayers;
+      EventBus.$emit('reset-mechanisms');
+      this.gamesIDs = await this.allGameIDs(this.playerList);
       this.games = await this.getGameDetails(this.gamesIDs);
-      this.numberOfPlayers = this.playerNames.length;
+      this.numberOfPlayers = this.playerList.length;
+      if(currentNumberOfPlayers !== 0) { this.numberOfPlayers = currentNumberOfPlayers }
     },
     async allGameIDs(names) {
       const allGameIDs = await Promise.all(names.map((name) => {
@@ -133,6 +135,9 @@ export default {
     },
     userList() {
       return this.playerNames.join(',');
+    },
+    isDisabled() {
+      return this.numberOfPlayers === 0;
     }
   },
   created() {
@@ -140,8 +145,8 @@ export default {
       this.activeMechanisms = activeMechanisms;
     }),
     EventBus.$on('player-toggled', (players) => {
-      this.playerNames = players
-      this.numberOfPlayers = this.playerNames.length;
+      this.playerList = players
+      this.numberOfPlayers = players.length;
     })
   }
 };
@@ -167,10 +172,6 @@ function showBestAtFirst(number, games) {
     }
   });
   return bestAt.concat(others);
-}
-
-function playerNames(names) { 
-  return names.split(',').map((name) => name.trim()); 
 }
 
 function dedupArray(arr) {

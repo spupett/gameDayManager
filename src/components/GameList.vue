@@ -1,6 +1,6 @@
 <template>
   <div>
-    Game List
+    <h3 v-show="this.games.length !== 0">Game List</h3>
     <div class="games" 
       v-bind:key=game.bggId        
       v-for="game in this.games">

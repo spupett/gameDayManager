@@ -1,11 +1,12 @@
 <template>
   <div class="container">
     <div id="name">
+
       <player-list />
 
       <label for="bestAt">Number of Players:</label> <br />
-      <input type="number" name="bestAt" id="bestAt" v-model="numberOfPlayers"> <br />
       <button v-on:click="showGames()">Get Game List</button>
+      <input type="number" name="bestAt" id="bestAt" v-model="numberOfPlayers"> <br />
       <span>Total Games: {{ games.length }}</span>
       <span>Filtered Games: {{ showFilteredGames.length }}</span>
       <div id="player-filter">
@@ -16,8 +17,11 @@
         <label for="expansion-filter">Discard Expansions</label>
         <input type="checkbox" name="expansion-filter" v-bind:checked="expansionFilter" v-model="expansionFilter" />
       </div>
+
       <mechanisms-filter v-bind:games="this.games" />
+
       <game-list v-bind:game-data="showFilteredGames" />
+      
     </div> 
   </div>
 </template>

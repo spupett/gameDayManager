@@ -1,11 +1,11 @@
 <template>
   <div>
     List of Players in the group:
-    <div class="btn-group-vertical">
+    <div class="btn-group">
       <div class="users"
         v-bind:key=user.bggName
         v-for="user in users">
-          <button class="btn btn-secondary" v-on:click="toggleAvailablePlayer(user.bggName)">{{ user.bggName }} </button>
+          <button class="btn btn-secondary" v-bind:class="{ playing: activePlayers.indexOf(user.bggName) !== -1}" v-on:click="toggleAvailablePlayer(user.bggName)">{{ user.bggName }} </button>
       </div>
     </div>
   </div>
@@ -17,11 +17,20 @@ import { EventBus } from '../event-bus.js'
 export default {
   name: 'player-list',
   data() {
-    return {}
+    return {
+      activePlayers: [],
+
+    }
   },
   methods: { 
     toggleAvailablePlayer(player) {
-      EventBus.$emit('player-toggled', player);
+      const idx = this.activePlayers.indexOf(player)
+      if(idx === -1 ) {
+        this.activePlayers.push(player)
+      } else {
+        this.activePlayers.splice(idx, 1);
+      }
+      EventBus.$emit('player-toggled', this.activePlayers);
     }
   },
   asyncComputed: {
@@ -34,8 +43,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .playing {
+    background-color: green;
+  }
+  
   .users {
-    padding: 2px 0;
+    padding: 0 2px;
   }
 </style>
 

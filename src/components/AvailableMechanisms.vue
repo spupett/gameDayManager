@@ -66,14 +66,8 @@ export default {
     }
   },
   created() {
-    EventBus.$on('all-filter-changed', (allFilters) => {
-      if(allFilters) {
-        this.activeMechanisms = JSON.parse(JSON.stringify(this.allMechanisms))
-        EventBus.$emit('mechanism-filter-change', this.activeMechanisms)
-      } else {
-        this.activeMechanisms = []
-        EventBus.$emit('mechanism-filter-change', [])
-      }
+    EventBus.$on('reset-mechanisms', () => {
+      this.activeMechanisms = []
     })
   }
 }

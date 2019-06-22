@@ -3,8 +3,7 @@
     <div id="name">
       <player-list />
 
-      <label for="users">Comma seperated users:</label>
-      <label for="bestAt">{{ userList }}</label> <br />
+      <label for="bestAt">Number of Players:</label> <br />
       <input type="number" name="bestAt" id="bestAt" v-model="numberOfPlayers"> <br />
       <button v-on:click="showGames()">Get Game List</button>
       <span>Total Games: {{ games.length }}</span>
@@ -136,22 +135,12 @@ export default {
     EventBus.$on('mechanism-filter-change', (activeMechanisms) => {
       this.activeMechanisms = activeMechanisms;
     }),
-    EventBus.$on('player-toggled', (player) => {
-      this.playerNames = updateList(this.playerNames, player)
+    EventBus.$on('player-toggled', (players) => {
+      this.playerNames = players
       this.numberOfPlayers = this.playerNames.length;
     })
   }
 };
-
-function updateList(list, item) {
-  if(list.indexOf(item) !== -1) {
-    const idx = list.indexOf(item);
-    list.splice(idx, 1);
-    return list;
-  }
-  list.push(item);
-  return list;
-}
 
 function filterGames(games, filters) {
   let filteredGames = games;

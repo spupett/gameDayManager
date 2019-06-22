@@ -49,6 +49,7 @@ export default {
   }
 
   .game .game-info {
+    width: 75%;
     display: inline-block;
     vertical-align: top;
   }
